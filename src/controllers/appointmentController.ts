@@ -1,6 +1,29 @@
 import { Request, Response } from 'express';
 import { Appointment, Patient, MedicalSlot } from '../models';
 
+export const getAllAppointments = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const appointments = await Appointment.findAll({
+      include: [
+        { model: Patient, as: 'patient' },
+        { model: MedicalSlot, as: 'medicalSlot' },
+      ],
+      order: [['id', 'ASC']],
+    });
+
+    res.status(200).json({
+      success: true,
+      data: appointments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao listar agendamentos',
+      error: error instanceof Error ? error.message : 'Erro desconhecido',
+    });
+  }
+};
+
 export const createAppointment = async (req: Request, res: Response): Promise<void> => {
   try {
     const { patientId, medicalSlotId } = req.body;
@@ -79,9 +102,7 @@ export const cancelAppointment = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const appointment = await Appointment.findByPk(appointmentId, {
-      include: [{ model: MedicalSlot, as: 'medicalSlot' }],
-    });
+    const appointment = await Appointment.findByPk(appointmentId);
 
     if (!appointment) {
       res.status(404).json({
@@ -101,8 +122,9 @@ export const cancelAppointment = async (req: Request, res: Response): Promise<vo
 
     await appointment.update({ status: 'cancelled' });
 
-    if (appointment.medicalSlot) {
-      await appointment.medicalSlot.update({ is_available: true });
+    const medicalSlot = await MedicalSlot.findByPk(appointment.medicalSlotId);
+    if (medicalSlot) {
+      await medicalSlot.update({ is_available: true });
     }
 
     const updatedAppointment = await Appointment.findByPk(appointmentId, {

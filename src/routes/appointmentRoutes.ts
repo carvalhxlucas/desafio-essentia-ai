@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { createAppointment, cancelAppointment } from '../controllers/appointmentController';
+import { getAllAppointments, createAppointment, cancelAppointment } from '../controllers/appointmentController';
 
 const router = Router();
 
+router.get('/', getAllAppointments);
 router.post('/', createAppointment);
 router.post('/cancel', cancelAppointment);
 
