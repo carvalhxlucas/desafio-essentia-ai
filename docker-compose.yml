@@ -10,6 +10,7 @@ services:
       - PORT=3000
       - NODE_ENV=production
       - DATABASE_PATH=/app/data/database.sqlite
+      - FRONTEND_URL=http://localhost:80
     volumes:
       - ./data:/app/data
     restart: unless-stopped
@@ -20,3 +21,19 @@ services:
       retries: 3
       start_period: 40s
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: medical-scheduling-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

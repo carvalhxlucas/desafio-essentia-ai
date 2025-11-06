@@ -1,0 +1,48 @@
+<div class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+  <div class="flex items-start justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-gray-900">
+        {{ appointment.patient?.name || 'Paciente não informado' }}
+      </h3>
+      <p class="text-sm text-gray-600 mt-1">{{ appointment.patient?.email }}</p>
+      <p class="text-sm text-gray-600">{{ appointment.patient?.phone }}</p>
+    </div>
+    <span
+      class="px-3 py-1 rounded-full text-xs font-medium border"
+      [ngClass]="getStatusClass(appointment.status)"
+    >
+      {{ getStatusText(appointment.status) }}
+    </span>
+  </div>
+
+  @if (appointment.medicalSlot) {
+    <div class="mt-4 pt-4 border-t border-gray-200">
+      <div class="flex items-center text-gray-700">
+        <svg
+          class="w-5 h-5 mr-2 text-blue-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        <div>
+          <p class="font-medium">Horário</p>
+          <p class="text-sm">
+            {{ formatDate(appointment.medicalSlot.start_time) }} -
+            {{ formatDate(appointment.medicalSlot.end_time) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="mt-4 pt-4 border-t border-gray-200">
+    <p class="text-xs text-gray-500">ID do Agendamento: #{{ appointment.id }}</p>
+  </div>
+</div>

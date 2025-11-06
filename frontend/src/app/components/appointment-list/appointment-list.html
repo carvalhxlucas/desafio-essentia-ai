@@ -1,0 +1,105 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">Agendamentos</h2>
+    <button
+      (click)="loadAppointments()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+    >
+      <svg
+        class="w-5 h-5 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        />
+      </svg>
+      Atualizar
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  }
+
+  @if (error) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center">
+        <svg
+          class="w-5 h-5 text-red-600 mr-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p class="text-red-800">{{ error }}</p>
+      </div>
+      <button
+        (click)="loadAppointments()"
+        class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+      >
+        Tentar novamente
+      </button>
+    </div>
+  }
+
+  @if (!loading && !error && appointments.length === 0) {
+    <div class="text-center py-12">
+      <svg
+        class="mx-auto h-12 w-12 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhum agendamento</h3>
+      <p class="mt-1 text-sm text-gray-500">
+        Não há agendamentos cadastrados no momento.
+      </p>
+    </div>
+  }
+
+  @if (!loading && !error && confirmedAppointments.length > 0) {
+    <div>
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">
+        Confirmados ({{ confirmedAppointments.length }})
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (appointment of confirmedAppointments; track appointment.id) {
+          <app-appointment-card [appointment]="appointment" />
+        }
+      </div>
+    </div>
+  }
+
+  @if (!loading && !error && cancelledAppointments.length > 0) {
+    <div class="mt-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">
+        Cancelados ({{ cancelledAppointments.length }})
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (appointment of cancelledAppointments; track appointment.id) {
+          <app-appointment-card [appointment]="appointment" />
+        }
+      </div>
+    </div>
+  }
+</div>

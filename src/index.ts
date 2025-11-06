@@ -1,9 +1,15 @@
 import express from 'express';
+import cors from 'cors';
 import { sequelize } from './models';
 import routes from './routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
